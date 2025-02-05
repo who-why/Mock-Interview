@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { MyContext } from "@/components/context/context";
-import Result from "@/components/result/result";
+import { MyContext } from "../../components/context/context";
+import Result from "../../components/result/result";
 
 const Page = () => {
   const {
@@ -14,8 +14,9 @@ const Page = () => {
     userAnswer,
     setUserAnswer,
     handleSubmit,
+    isRecording, setIsRecording
   } = useContext(MyContext);
-  const [isRecording, setIsRecording] = useState(false);
+ 
   const [timer, setTimer] = useState(60);
   const [loading, setLoading] = useState(false);
   const [showResult, setShowResult] = useState(false);
@@ -54,7 +55,9 @@ const Page = () => {
       };
 
       mediaRecorderRef.current.onstop = () => {
-        const blob = new Blob(recordedChunksRef.current, { type: "video/webm" });
+        const blob = new Blob(recordedChunksRef.current, {
+          type: "video/webm",
+        });
         const url = URL.createObjectURL(blob);
         setVideoURL(url);
         recordedChunksRef.current = [];
@@ -102,17 +105,22 @@ const Page = () => {
     // Stop video recording
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
-      videoStreamRef.current.srcObject.getTracks().forEach((track) => track.stop());
     }
-
+  
+    if (videoStreamRef.current && videoStreamRef.current.srcObject) {
+      videoStreamRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      videoStreamRef.current.srcObject = null; // Clear stream after stopping
+    }
+  
     // Stop audio recording
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
-
+  
     setIsRecording(false);
     clearInterval(timerRef.current);
   };
+  
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -147,7 +155,7 @@ const Page = () => {
               ref={videoStreamRef}
               autoPlay
               muted
-              className="w-full md:w-[70%] bg-black rounded shadow"
+              className="w-full md:w-[70%] max-h-[500px] bg-black rounded shadow"
             />
           </div>
 
@@ -161,9 +169,10 @@ const Page = () => {
               required
             />
           )}
+        </div>
 
+        <div className="flex items-center gap-5 justify-around mt-4">
           {/* Single Recording Button */}
-          <div className="flex items-center justify-center">
             <button
               type="button"
               className={`px-4 py-2 rounded transition ${
@@ -175,9 +184,7 @@ const Page = () => {
             >
               {isRecording ? "Stop Recording" : "Start Recording"}
             </button>
-          </div>
 
-          <div className="flex items-center justify-center mt-4">
             <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
@@ -186,11 +193,11 @@ const Page = () => {
               {loading ? "Submitting..." : "Submit Answer"}
             </button>
           </div>
-        </div>
+        
       </form>
-
+   
       {/* Show recorded video */}
-      {videoURL && (
+      {/* {videoURL && (
         <div className="mt-5">
           <h3 className="text-center font-bold">Recorded Video</h3>
           <video
@@ -199,7 +206,7 @@ const Page = () => {
             className="w-full md:w-[70%] bg-black rounded shadow"
           />
         </div>
-      )}
+      )} */}
     </div>
   );
 };
