@@ -14,7 +14,7 @@ const Home = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      {/* Container with Glassmorphism Effect */}
+
       <motion.div
         className="w-full max-w-6xl p-8 md:p-12 flex flex-col md:flex-row gap-5 items-center justify-between"
         initial={{ y: -50, opacity: 0 }}

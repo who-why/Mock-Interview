@@ -1,84 +1,95 @@
 "use client";
 import React, { createContext, useEffect, useState, useCallback } from "react";
-import problem from "../data/ques"; // Assuming this is your question list
-import { v4 as uuidv4 } from 'uuid'; // Import UUID for unique keys
+import problem from "../data/ques"; 
+import { v4 as uuidv4 } from 'uuid'; 
 
 export const MyContext = createContext();
 
 export const MyProvider = ({ children }) => {
   const [qaPairs, setQaPairs] = useState([]);
-  const [currentQuestion, setCurrentQuestion] = useState(getRandomQuestionFunc());
+  const [selectedSkillName, setSelectedSkillName] = useState("");
   const [userAnswer, setUserAnswer] = useState("");
-  const [feedback, setFeedback] = useState([]); // Store AI feedback as an array
-   const [isRecording, setIsRecording] = useState(false);
+  const [feedback, setFeedback] = useState([]); 
+  const [isRecording, setIsRecording] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState("");
 
-  // Function to get a random question (defined outside component to prevent recreation)
-  function getRandomQuestionFunc() {
-    if (problem.length > 0) {
-      const randomIndex = Math.floor(Math.random() * problem.length);
-      return problem[randomIndex];
+  console.log("Selected Skill:", selectedSkillName);
+
+  // Function to get a random question from the selected skill
+  const getRandomQuestionFunc = () => {
+    if (!selectedSkillName || selectedSkillName.trim() === "") {
+      return "Please select a skill first.";
     }
-    return "No questions available";
-  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    // Find the selected skill in the problem array
+    const selectedSkill = problem.find(skill => skill[0] === selectedSkillName);
 
-    setQaPairs((prev) => [
-      ...prev,
-      { id: uuidv4(), question: currentQuestion, answer: userAnswer }, // Add unique ID
-    ]);
-    setUserAnswer("");
-    setCurrentQuestion(getRandomQuestionFunc()); //Get new Question after submit
-    
+    if (selectedSkill && selectedSkill[1].length > 0) {
+      const randomIndex = Math.floor(Math.random() * selectedSkill[1].length);
+      return selectedSkill[1][randomIndex]; // Get a random question from the selected skill
+    }
+
+    return "No questions available for this skill.";
   };
 
-  // useCallback is used here to memorize the function
+  // Update `currentQuestion` whenever `selectedSkillName` changes
+  useEffect(() => {
+    if (selectedSkillName) {
+      setCurrentQuestion(getRandomQuestionFunc());
+    }
+  }, [selectedSkillName]);
+
+  // Handle answer submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setQaPairs((prev) => [
+      ...prev,
+      { id: uuidv4(), question: currentQuestion, answer: userAnswer },
+    ]);
+    setUserAnswer("");
+    setCurrentQuestion(getRandomQuestionFunc());
+  };
+
+  // Fetch feedback based on QA pairs
   const getFeedbackFromAI = useCallback(async () => {
     try {
-      console.log("getFeedbackFromAI called.  qaPairs:", qaPairs); // DEBUG
+      console.log("getFeedbackFromAI called. qaPairs:", qaPairs);
 
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(qaPairs.map(item => ({ques: item.question, ans: item.answer}))), // Send the correct format
+        body: JSON.stringify(qaPairs.map(item => ({ ques: item.question, ans: item.answer }))),
       });
 
       if (!response.ok) {
-        // Handle HTTP errors
-        const errorData = await response.json(); // Try to parse error message
+        const errorData = await response.json();
         console.error("HTTP Error:", response.status, errorData);
         throw new Error(`HTTP error! Status: ${response.status} - ${errorData?.error || 'Unknown error'}`);
       }
 
       const data = await response.json();
-
       if (data.error) {
         console.error("API Error:", data.error);
         return;
       }
 
-      // Append new feedback to the existing array
-      setFeedback((prevFeedback) => {
-        const newFeedback = data.feedbackResults.map(fb => ({ ...fb, id: uuidv4() }));  // Add unique ID
-        return [...prevFeedback, ...newFeedback];
-      });
+      setFeedback((prevFeedback) => [
+        ...prevFeedback,
+        ...data.feedbackResults.map(fb => ({ ...fb, id: uuidv4() }))
+      ]);
+
     } catch (error) {
       console.error("Fetch Error:", error);
     }
-  }, [qaPairs]); // Dependency array: React will only recreate the callback when `qaPairs` changes.  This is VERY important.
+  }, [qaPairs]);
 
-  // useEffect(() => {
-  //   // Log feedback to console when it changes
-  //   console.log("Feedback:", feedback);
-  // }, [feedback]);
-
+  // Call `getFeedbackFromAI` whenever `qaPairs` changes
   useEffect(() => {
-    if (qaPairs.length > 0) {  // Only call if qaPairs has data
-      console.log("Calling getFeedbackFromAI from useEffect. qaPairs:", qaPairs); // DEBUG
+    if (qaPairs.length > 0) {
+      console.log("Calling getFeedbackFromAI from useEffect. qaPairs:", qaPairs);
       getFeedbackFromAI();
     }
-  }, [qaPairs, getFeedbackFromAI]); // `getFeedbackFromAI` is also a dependency because it's useCallback
+  }, [qaPairs, getFeedbackFromAI]);
 
   return (
     <MyContext.Provider
@@ -91,9 +102,12 @@ export const MyProvider = ({ children }) => {
         setUserAnswer,
         handleSubmit,
         getRandomQuestion: getRandomQuestionFunc,
-        getFeedbackFromAI, // Function to fetch feedback
-        feedback, // AI-generated feedback
-        isRecording, setIsRecording,
+        getFeedbackFromAI,
+        feedback,
+        isRecording,
+        setIsRecording,
+        selectedSkillName,
+        setSelectedSkillName,
       }}
     >
       {children}
