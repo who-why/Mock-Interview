@@ -7,6 +7,13 @@ import HeroImage from "../../public/images/boy.webp";
 import { motion } from "framer-motion";
 
 const Home = () => {
+
+  const headingVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+  };
+
+
   return (
     <motion.div
       className="flex flex-col items-center justify-center px-6 md:px-12"
@@ -20,6 +27,8 @@ const Home = () => {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
       >
         {/* Left Content */}
         <motion.div

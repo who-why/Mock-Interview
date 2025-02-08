@@ -32,14 +32,12 @@ export const MyProvider = ({ children }) => {
     return "No questions available for this skill.";
   };
 
-  // Update `currentQuestion` whenever `selectedSkillName` changes
   useEffect(() => {
     if (selectedSkillName) {
       setCurrentQuestion(getRandomQuestionFunc());
     }
   }, [selectedSkillName]);
 
-  // Handle answer submission
   const handleSubmit = (e) => {
     e.preventDefault();
     setQaPairs((prev) => [
@@ -50,7 +48,6 @@ export const MyProvider = ({ children }) => {
     setCurrentQuestion(getRandomQuestionFunc());
   };
 
-  // Fetch feedback based on QA pairs
   const getFeedbackFromAI = useCallback(async () => {
     try {
       console.log("getFeedbackFromAI called. qaPairs:", qaPairs);
@@ -83,7 +80,6 @@ export const MyProvider = ({ children }) => {
     }
   }, [qaPairs]);
 
-  // Call `getFeedbackFromAI` whenever `qaPairs` changes
   useEffect(() => {
     if (qaPairs.length > 0) {
       console.log("Calling getFeedbackFromAI from useEffect. qaPairs:", qaPairs);

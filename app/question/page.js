@@ -146,14 +146,14 @@ const Page = () => {
         <span className="text-red-500 font-semibold">Time Left: {timer}s</span>
       </div>
 
-      <form onSubmit={handleFormSubmit} className="w-full md:w-[70%] flex flex-col gap-3 mt-5">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col items-center gap-2">
-            <video ref={videoStreamRef} autoPlay muted className="w-full md:w-[70%] max-h-[500px] bg-black rounded shadow" />
+      <form onSubmit={handleFormSubmit} className="w-full md:w-[100%] flex flex-col gap-5 mt-5">
+        <div className="flex flex-col md:flex-row items-center relative gap-4">
+          <div className="md:w-[50%] flex flex-col items-center gap-2">
+            <video ref={videoStreamRef} autoPlay muted className="w-full max-h-[100%] bg-black rounded shadow" />
           </div>
 
           <textarea
-            className="p-2 border rounded resize-none border-black"
+            className="w-[50%] md:min-h-[400px] p-2 border rounded resize-none border-black"
             rows="4"
             value={userAnswer}
             onChange={(e) => setUserAnswer(e.target.value)}

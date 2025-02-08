@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
-import { FaLink, FaCopy } from "react-icons/fa";
+import { Link, Copy } from "lucide-react"; 
 
 export default function RoomPage() {
   const params = useParams();
@@ -80,7 +80,7 @@ export default function RoomPage() {
           onClick={shareRoomLink}
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md"
         >
-          <FaLink />
+          <Link size={18} /> {/* Lucide icon for link */}
           Share Room
         </button>
         {copied && (
