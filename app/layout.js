@@ -1,15 +1,15 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Source_Code_Pro } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/extra/navbar";
 import { MyProvider } from "../components/context/context";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const sourceCodePro = Source_Code_Pro({
+  variable: "--font-source-code",
   subsets: ["latin"],
 });
 
@@ -21,12 +21,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="!scroll-smooth">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      > 
-      
+      <body className={`${inter.variable} ${sourceCodePro.variable} antialiased`}>
         <MyProvider>
-        <Navbar/>
+          <Navbar />
           {children}
         </MyProvider>
       </body>
