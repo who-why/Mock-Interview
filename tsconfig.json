@@ -23,6 +23,8 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "app/mock/page.js", "app/mock/[roomid]/page.js"],
+  "jsx": "react-jsx",
+    "allowJs": true,
+  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "app/mock/page.js", "app/mock/[roomid]/page.js", "components/lib/utils.js", "components/components/ui/button.js", "components/components/ui/card.js", "components/components/ui/input.js"],
   "exclude": ["node_modules"]
 }
