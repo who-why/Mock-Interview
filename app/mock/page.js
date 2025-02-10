@@ -13,7 +13,7 @@ export default function MockPage() {
   const [isJoining, setIsJoining] = useState(false); 
   const router = useRouter();
 
-  const joinRoom = (e: React.FormEvent) => {
+  const joinRoom = (e) => {
     e.preventDefault();
     if (roomId) {
       setIsJoining(true); 

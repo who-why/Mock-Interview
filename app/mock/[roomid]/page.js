@@ -7,15 +7,15 @@ import { Link, Copy } from "lucide-react";
 
 export default function RoomPage() {
   const params = useParams();
-  const [roomId, setRoomId] = useState<string | null>(null);
-  const videoContainerRef = useRef<HTMLDivElement | null>(null);
+  const [roomId, setRoomId] = useState(null);
+  const videoContainerRef = useRef(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     console.log("Params from useParams():", params);
 
-    if (params?.roomid) {
-      setRoomId(params.roomid as string);
+    if (params && params.roomid) {
+      setRoomId(params.roomid);
     }
   }, [params]);
 
@@ -23,8 +23,8 @@ export default function RoomPage() {
     if (!roomId) return;
 
     const initCall = async () => {
-      const appID = Number.parseInt(process.env.NEXT_PUBLIC_ZEGO_APP_ID!);
-      const serverSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET!;
+      const appID = parseInt(process.env.NEXT_PUBLIC_ZEGO_APP_ID, 10);
+      const serverSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET;
 
       if (!appID || !serverSecret) {
         console.error("Missing ZegoCloud credentials");
@@ -42,7 +42,7 @@ export default function RoomPage() {
       const zc = ZegoUIKitPrebuilt.create(kitToken);
 
       zc.joinRoom({
-        container: videoContainerRef.current!,
+        container: videoContainerRef.current,
         scenario: { mode: ZegoUIKitPrebuilt.OneONoneCall },
         showScreenSharingButton: true,
         showPreJoinView: true,
@@ -80,12 +80,10 @@ export default function RoomPage() {
           onClick={shareRoomLink}
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md"
         >
-          <Link size={18} /> {/* Lucide icon for link */}
+          <Link size={18} />
           Share Room
         </button>
-        {copied && (
-          <p className="text-green-400 mt-2 text-sm">Link copied!</p>
-        )}
+        {copied && <p className="text-green-400 mt-2 text-sm">Link copied!</p>}
       </div>
     </div>
   );
