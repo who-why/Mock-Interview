@@ -3,6 +3,7 @@
 import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { MyContext } from "@/context/context";
+import Image from "next/image";
 
 const Page = () => {
   const [selectedSkill, setSelectedSkill] = useState();
@@ -35,7 +36,7 @@ const Page = () => {
               selectedSkill === index ? "border-green-500" : "border-transparent"
             }`}
           >
-            <img src={skill.icon} alt={skill.name} className="object-cover" />
+            <Image src={skill.icon} alt={skill.name} className="object-cover" />
             {selectedSkill === index && (
               <>
                 <div className="absolute top-1 right-1 w-6 h-6 bg-green-500 text-white flex items-center justify-center rounded-full">

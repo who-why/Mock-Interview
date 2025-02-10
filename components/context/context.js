@@ -16,27 +16,26 @@ export const MyProvider = ({ children }) => {
   console.log("Selected Skill:", selectedSkillName);
 
   // Function to get a random question from the selected skill
-  const getRandomQuestionFunc = () => {
+  const getRandomQuestionFunc = useCallback(() => {
     if (!selectedSkillName || selectedSkillName.trim() === "") {
       return "Please select a skill first.";
     }
 
-    // Find the selected skill in the problem array
     const selectedSkill = problem.find(skill => skill[0] === selectedSkillName);
 
     if (selectedSkill && selectedSkill[1].length > 0) {
       const randomIndex = Math.floor(Math.random() * selectedSkill[1].length);
-      return selectedSkill[1][randomIndex]; // Get a random question from the selected skill
+      return selectedSkill[1][randomIndex]; 
     }
 
     return "No questions available for this skill.";
-  };
+  }, [selectedSkillName]);
 
   useEffect(() => {
     if (selectedSkillName) {
       setCurrentQuestion(getRandomQuestionFunc());
     }
-  }, [selectedSkillName]);
+  }, [selectedSkillName, getRandomQuestionFunc]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
