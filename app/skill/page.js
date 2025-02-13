@@ -4,6 +4,8 @@ import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { MyContext } from "@/context/context";
 import Image from "next/image";
+import Levelskill from '../../components/home/select'
+
 
 const Page = () => {
   const [selectedSkill, setSelectedSkill] = useState();
@@ -20,11 +22,11 @@ const Page = () => {
   };
 
   return (
-    <div className="flex flex-col p-3 gap-3 items-center">
+    <div className="flex flex-col p-3 gap-5 items-center">
       <h2 className="text-4xl md:text-5xl text-center font-extrabold text-gradient bg-gradient-to-r from-pink-500 via-red-500 to-pink-700 text-transparent bg-clip-text mt-6">
         Choose One Skill for the Interview
       </h2>
-
+       <Levelskill/>
       <div className="w-full md:w-[70%] grid grid-cols-1 md:grid-cols-5 lg:grid-cols-6 gap-6 mt-8 justify-items-center">
         {skills.map((skill, index) => (
           <div
@@ -36,7 +38,7 @@ const Page = () => {
               selectedSkill === index ? "border-green-500" : "border-transparent"
             }`}
           >
-            <Image src={skill.icon} alt={skill.name} className="object-cover" />
+            <Image src={skill.icon} alt={skill.name} width={360} height={200} className="object-cover w-full" />
             {selectedSkill === index && (
               <>
                 <div className="absolute top-1 right-1 w-6 h-6 bg-green-500 text-white flex items-center justify-center rounded-full">

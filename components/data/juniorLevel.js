@@ -1,4 +1,4 @@
-const problem = [
+const juniorLevelQuestions = [
   [
     "React.js",
     [
@@ -166,4 +166,4 @@ const problem = [
   ],
 ];
 
-export default problem;
+export default juniorLevelQuestions;

@@ -1,6 +1,9 @@
 "use client";
 import React, { createContext, useEffect, useState, useCallback } from "react";
-import problem from "../data/ques"; 
+import juniorLevelQuestions from '../data/juniorLevel'
+import midLevelQuestions from "../data/midLevelQuestions";
+import seniorLevelQuestions from "../data/seniorLevelQuestions";
+
 import { v4 as uuidv4 } from "uuid";
 
 export const MyContext = createContext();
@@ -9,11 +12,26 @@ export const MyProvider = ({ children }) => {
   const [qaPairs, setQaPairs] = useState([]);
   const [selectedSkillName, setSelectedSkillName] = useState("");
   const [userAnswer, setUserAnswer] = useState("");
-  const [feedback, setFeedback] = useState([]); 
+  const [feedback, setFeedback] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState("");
+  const [Explvl, setExplvl] = useState("junior");
 
-  console.log("Selected Skill:", selectedSkillName);
+  console.log("Selected Skill:", selectedSkillName, "Experience Level:", Explvl);
+
+  // Determine the question set based on experience level
+  const getQuestionSet = () => {
+    switch (Explvl) {
+      case "mid":
+        return midLevelQuestions;
+      case "senior":
+        return seniorLevelQuestions;
+      default:
+        return juniorLevelQuestions;
+    }
+  };
+
+  const problem = getQuestionSet();
 
   // Function to get a random question from the selected skill
   const getRandomQuestionFunc = useCallback(() => {
@@ -25,11 +43,11 @@ export const MyProvider = ({ children }) => {
 
     if (selectedSkill && selectedSkill[1].length > 0) {
       const randomIndex = Math.floor(Math.random() * selectedSkill[1].length);
-      return selectedSkill[1][randomIndex]; 
+      return selectedSkill[1][randomIndex];
     }
 
     return "No questions available for this skill.";
-  }, [selectedSkillName]);
+  }, [selectedSkillName, problem]);
 
   useEffect(() => {
     if (selectedSkillName) {
@@ -103,6 +121,8 @@ export const MyProvider = ({ children }) => {
         setIsRecording,
         selectedSkillName,
         setSelectedSkillName,
+        Explvl,
+        setExplvl,
       }}
     >
       {children}
